@@ -1,0 +1,26 @@
+services:
+  portainer-enterprise:
+    image: portainer/portainer-ee
+    container_name: portainer-enterprise
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+      - "9100:9000"
+      - "9443:9443"
+    networks:
+      shipyard:
+        ipv4_address: [REDACTED_IP]
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "${STORAGE_DIR}/data:/data"
+    environment:
+      - "PORTAINER_LICENSE_KEY=${PORTAINER_LICENSE_KEY}"
+
+networks:
+  shipyard:
+    name: shipyard
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: [REDACTED_IP]/24

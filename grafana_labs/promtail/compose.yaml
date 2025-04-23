@@ -1,0 +1,18 @@
+services:
+  promtail:
+    image: grafana/promtail:latest
+    container_name: promtail
+    networks:
+      grafana_labs:
+        ipv4_address: [REDACTED_IP]
+    volumes:
+      - ${STORAGE_DIR}/logs:/var/log  # Promtail logs
+      - ${CONFIGS_DIR}.yaml.yaml  # Shared config path (corrected)
+      - ${CERTS_DIR}/promtail:/etc/certs  # Shared certs path
+      - ${STORAGE_DIR}/tmp:/tmp  #.yaml file inside ${STORAGE_DIR}/tmp on the host
+    command: -config.file=.yaml
+    restart: unless-stopped
+
+networks:
+  grafana_labs:
+    external: true

@@ -1,0 +1,30 @@
+# -------------------------------
+# Core MLflow & MLOps
+# -------------------------------
+mlflow             # Experiment tracking and model management
+boto3              # AWS S3 / MinIO-compatible object storage client (required by MLflow)
+psycopg2-binary    # PostgreSQL driver (for MLflow backend store)
+SQLAlchemy         # ORM used by MLflow for DB operations
+alembic            # Optional: DB migrations (used with SQLAlchemy)
+
+# -------------------------------
+# Secrets & Security
+# -------------------------------
+hvac               # HashiCorp Vault client (if managing secrets programmatically)
+
+# -------------------------------
+# Web & Serving (optional)
+# -------------------------------
+flask              # Flask (used internally by MLflow UI, not needed unless customizing)
+gunicorn           # WSGI server (if deploying Flask-based apps)
+
+# -------------------------------
+# Data & Logging
+# -------------------------------
+pandas             # Data manipulation & logging input examples
+loguru             # Optional structured logging (better than built-in logging)
+
+# -------------------------------
+# Optional (only if directly interacting with MinIO SDK)
+# -------------------------------
+# minio            # Optional: use only if interacting with MinIO SDK directly

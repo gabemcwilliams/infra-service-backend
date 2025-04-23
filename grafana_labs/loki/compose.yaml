@@ -1,0 +1,28 @@
+services:
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    ports:
+      - "3100:3100"  # Loki HTTP API
+    networks:
+      grafana_labs:
+        ipv4_address: [REDACTED_IP]
+    volumes:
+      - "${STORAGE_DIR}/:/mnt/data"  # Loki storage
+      - "${CONFIGS_DIR}.yaml.yaml"  # Shared config path
+      - "${CERTS_DIR}/public.crt:/etc/public.crt:ro"
+      - "${CERTS_DIR}/private.key:/etc/private.key:ro"
+      - "${CERTS_DIR}/ca.crt:/etc/ca.crt:ro"
+    extra_hosts:
+      - "minio.${DOMAIN}:[REDACTED_IP]" # MinIO backend
+    environment:
+      - "AWS_CA_BUNDLE=/etc/ca.crt"
+    command: -config.expand-env=true -config.file=.yaml
+    restart: unless-stopped
+
+networks:
+  grafana_labs:
+    external: true
+
+
+

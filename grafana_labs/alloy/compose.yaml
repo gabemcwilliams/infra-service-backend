@@ -1,0 +1,25 @@
+services:
+  alloy:
+    image: grafana/alloy:latest
+    container_name: alloy
+    ports:
+      - "12345:12345"  # Alloy HTTP server
+    networks:
+      grafana_labs:
+        ipv4_address: [REDACTED_IP]
+    volumes:
+      - "${STORAGE_DIR}/:/mnt/data"  # Alloy storage
+      - "${CONFIGS_DIR}.yaml:/etc/alloy/config.alloy"  # Shared config path
+      - "${CERTS_DIR}/public.crt:/etc/public.crt:ro"
+      - "${CERTS_DIR}/private.key:/etc/private.key:ro"
+      - "${CERTS_DIR}/ca.crt:/etc/ca.crt:ro"
+    extra_hosts:
+      - "minio.${DOMAIN}:[REDACTED_IP]" # MinIO backend (if required)
+    environment:
+      - "AWS_CA_BUNDLE=/etc/ca.crt"
+    command: run --server.http.listen-addr=[REDACTED_IP]:12345 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy
+    restart: unless-stopped
+
+networks:
+  grafana_labs:
+    external: true

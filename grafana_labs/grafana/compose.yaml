@@ -1,0 +1,27 @@
+services:
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"  # Grafana web UI
+    extra_hosts:
+      - "db.internal:[REDACTED_IP]"
+    networks:
+      grafana_labs:
+        ipv4_address: [REDACTED_IP]
+    volumes:
+      - ${CONFIGS_DIR}/grafana.ini:/etc/grafana/grafana.ini  # Shared Grafana config path (optional)
+      - ${STORAGE_DIR}/grafana:/var/lib/grafana  # Persistent data storage
+      - ${STORAGE_DIR}/logs:/var/log/grafana  # Grafana logs
+      - ${STORAGE_DIR}/plugins:/var/lib/grafana/plugins  # Grafana plugins
+      - ${STORAGE_DIR}/provisioning:/etc/grafana/provisioning  # Grafana provisioning files
+    restart: unless-stopped
+
+networks:
+  grafana_labs:
+    name: grafana_labs
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: "[REDACTED_IP]/24"

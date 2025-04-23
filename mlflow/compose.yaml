@@ -1,0 +1,35 @@
+services:
+  mlflow:
+    image: docker-registry.example.internal:5000/mlflow_python3.12:latest
+    container_name: mlflow
+    hostname: mlflow.example.internal
+    restart: unless-stopped
+    networks:
+      machine_learning:
+        ipv4_address: [REDACTED_IP]
+    ports:
+      - "5010:5000"  # MLflow UI
+    extra_hosts:
+      - "minio.example.internal:[REDACTED_IP]"  # MinIO backend
+      - "db.example.internal:[REDACTED_IP]"  # PostgreSQL backend
+      - "host.docker.internal:[REDACTED_IP]"  # Host network access
+    volumes:
+      - "${CERTS_DIR}/public.crt:/mlflow/public.crt:ro"
+      - "${CERTS_DIR}/private.key:/mlflow/private.key:ro"
+      - "${CERTS_DIR}/ca.crt:/mlflow/ca.crt:ro"
+      - "${CERTS_DIR}/ca.crt:/usr/local/share/ca-certificates/ca.crt:ro"  # Vault authentication
+      - "${STORAGE_DIR}/mlflow:/mlflow/data"  # MLflow storage location on host
+    env_file:
+      - .env
+      - mlflow.env
+#    command: [ "/bin/sh", "-c","tail -f /dev/null" ]
+    command: [ "/bin/sh", "-c","mlflow server --host '[REDACTED_IP]' --port 5000 --backend-store-uri '${MLFLOW_SERVER_BACKEND_STORE_URI}' --default-artifact-root '${MLFLOW_SERVER_DEFAULT_ARTIFACT_ROOT}'  --default-artifact-root '${MLFLOW_SERVER_DEFAULT_ARTIFACT_ROOT}' --serve-artifacts" ]
+
+networks:
+  machine_learning:
+    name: machine_learning
+    external: false
+    driver: bridge
+    ipam:
+      config:
+        - subnet: [REDACTED_IP]/24

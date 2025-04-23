@@ -1,0 +1,30 @@
+services:
+  registry:
+    image: registry:2
+    container_name: registry
+    restart: unless-stopped
+    networks:
+      registry:
+        ipv4_address: [REDACTED_IP]
+    ports:
+      - "5000:5000"  # Exposing the registry on port 5000 for HTTPS
+    environment:
+      - REGISTRY_HTTP_ADDR=[REDACTED_IP]:5000
+      - REGISTRY_HTTP_TLS_CERTIFICATE= /certs/public.crt
+      - REGISTRY_HTTP_TLS_KEY= /certs/private.key
+      - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/var/lib/registry
+      - REGISTRY_STORAGE_DELETE_ENABLED=true  # Enable deletion
+    volumes:
+      - "${STORAGE_DIR}:/var/lib/registry"  # Mounted volume for registry data
+      - "${CERTS_DIR}/:/certs:ro"  # Mount certificates into the container
+      - "${CONFIGS_DIR}.yml.yml"  # Mount registry config
+    command: ["registry", "serve", ".yml"]
+
+networks:
+  registry:
+    name: registry
+    driver: bridge
+    ipam:
+      config:
+        - subnet: [REDACTED_IP]/24
+

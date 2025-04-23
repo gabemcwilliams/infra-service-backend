@@ -1,0 +1,23 @@
+services:
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=kafka
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka.internal:9092  # Adjust this to point to your Kafka server
+    ports:
+      - "8080:8080"
+    networks:
+      - kafka
+    restart: unless-stopped
+
+networks:
+  kafka:
+    name: kafka
+    driver: bridge
+    ipam:
+      config:
+        - subnet: "[REDACTED_IP]/24"  # Defining the subnet for the kafka network
+
+
+

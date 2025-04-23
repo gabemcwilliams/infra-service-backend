@@ -1,0 +1,25 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "admin:*"
+            ],
+            "Resource": [
+                "arn:aws:s3:::staging",
+                "arn:aws:s3:::staging/*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:*"
+            ],
+            "Resource": [
+                "arn:aws:s3:::staging",
+                "arn:aws:s3:::staging/*"
+            ]
+        }
+    ]
+}

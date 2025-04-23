@@ -1,0 +1,7 @@
+networks:
+  grafana:  # Custom network name
+    driver: bridge  # Default Docker network driver. Isolates containers on a local virtual LAN.
+    ipam:  # IP Address Management: defines how IPs are assigned within the network
+      driver: default  # Use Docker's built-in IPAM driver (you’re not that fancy yet)
+      config:
+        - subnet: "[REDACTED_IP]/24"  # CIDR subnet block. Gives you 256 IPs (254 usable)

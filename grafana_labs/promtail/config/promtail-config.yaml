@@ -1,0 +1,28 @@
+server:
+  http_listen_port: 9080  # Port to expose Promtail's HTTP server
+
+  http_tls_config:
+    client_auth_type: RequireAndVerifyClientCert
+    client_ca_file: /etc/ca.crt  # Path to the CA certificate file
+    cert_file: /etc/public.crt  # Path to your client certificate file (if necessary)
+    key_file: /etc/private.key  # Path to your client key file (if necessary)
+
+positions:
+  .yaml  # File to store the position of the logs (used to resume from last read)
+
+clients:
+  - url: https://loki.example.internal/loki/api/v1/push  # Ensure this points to your Loki instance
+    tls_config:
+     ca_file: /etc/ca.crt
+     cert_file: /etc/public.crt
+     key_file: /etc/private.key
+
+
+scrape_configs:
+  - job_name: system_logs
+    static_configs:
+      - targets:
+          - localhost  # Where Promtail should scrape logs from
+        labels:
+          job: varlogs
+          __path__: /var/log/*log  # Path to log files to scrape (adjust as needed)

@@ -1,0 +1,89 @@
+services:
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    hostname: kafka
+    container_name: kafka
+    extra_hosts:
+      - "{{ KAFKA_HOSTNAME }}:{{ HOST_IP }}"  # Replace with local DNS or /etc/hosts mapping
+    networks:
+      kafka:
+        ipv4_address: [REDACTED_IP]
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    environment:
+      # Enable KRaft mode (Kafka without Zookeeper)
+      # This allows Kafka to operate without Zookeeper.
+      KAFKA_KRAFT_MODE: "true"
+
+      # The unique node ID for this broker/controller in the Kafka cluster.
+      # In KRaft mode, this must be set to a unique integer.
+      KAFKA_NODE_ID: 1
+
+      # Defines the roles for this Kafka node.
+      # In KRaft mode, the node can act as both a broker and a controller.
+      KAFKA_PROCESS_ROLES: controller,broker
+
+      # Controller Quorum Voters (for KRaft mode).
+      # This specifies the quorum that can elect a controller.
+      # For a single node, the controller is on the same node.
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@[REDACTED_IP]:9093"
+
+      # Security protocol map for different listeners.
+      # PLAINTEXT means no encryption, CONTROLLER is for controller communication.
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+
+      # Inter-broker communication listener name.
+      # In this case, the broker uses the PLAINTEXT listener.
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+
+      # Specifies the listener to use for the controller.
+      # The controller communicates with the brokers using this listener.
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+
+      # This configuration defines the network interfaces and ports
+      # Kafka will use for communication with clients and other brokers.
+      KAFKA_LISTENERS: PLAINTEXT://[REDACTED_IP]:9092,CONTROLLER://[REDACTED_IP]:9093
+
+      # Advertised listeners are the addresses that Kafka advertises to clients
+      # so they know how to reach the broker. Clients outside the container
+      # need to connect using this advertised address.
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://{{ KAFKA_HOSTNAME }}:9092
+
+      # Directory where Kafka stores its log data (topics, partitions, etc.).
+      # This is required for Kafka to store and manage messages.
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+
+      # Enables auto-creation of topics when a producer or consumer requests
+      # a topic that doesn't exist. It's usually set to "true" in development.
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+
+      # Replication factor for the Kafka offset topic. In KRaft mode, the replication
+      # factor should be set to 1 because there is only one broker and no Zookeeper.
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+      # The retention period for Kafka logs (in hours). Kafka deletes logs older than this.
+      KAFKA_LOG_RETENTION_HOURS: 24
+
+      # The delay before the initial rebalance of a consumer group begins.
+      # A delay of 0 means it starts immediately.
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+
+      # A unique identifier for the Kafka cluster.
+      # This is typically auto-generated, but you can set a custom cluster ID.
+      CLUSTER_ID: "{{ RANDOM_CLUSTER_ID }}"  # Replace with unique value (not secret)
+
+    volumes:
+      # Mounting the Docker socket to allow Kafka to interact with Docker.
+      # This is useful for running Kafka inside Docker and ensuring it has necessary permissions.
+      - /var/run/docker.sock:/var/run/docker.sock
+
+      # Mounting a local directory to persist Kafka data (logs, offsets, topics).
+      # This ensures Kafka data is retained across container restarts.
+      - ./data:/var/lib/kafka/data
+    restart: unless-stopped
+
+networks:
+  kafka:
+    name: kafka
+    external: true

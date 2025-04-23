@@ -1,0 +1,76 @@
+
+# -----------------------------------------------------------------------------
+# MinIO Configuration File (Linux)
+# -----------------------------------------------------------------------------
+# This file contains the necessary environment variables to configure MinIO.
+# Ensure that all paths, credentials, and settings match your deployment needs.
+# -----------------------------------------------------------------------------
+
+# This file is located in /etc/default/minio
+
+# -----------------------------------------------------------------------------
+# Root Credentials
+# -----------------------------------------------------------------------------
+# MINIO_ROOT_USER and MINIO_ROOT_PASSWORD set the root account for MinIO.
+# This account has full access to all resources and administrative APIs.
+# Ensure strong credentials are used for production environments.
+# -----------------------------------------------------------------------------
+MINIO_ROOT_USER=data_root
+MINIO_ROOT_PASSWORD=
+
+# -----------------------------------------------------------------------------
+# TLS Certificates
+# -----------------------------------------------------------------------------
+# MinIO requires SSL certificates for secure communication.
+# Ensure that public.crt, private.key, and CA files exist at the specified path.
+# Default MinIO location for certs: /home/minio/.minio/certs/
+# -----------------------------------------------------------------------------
+# ** Ensure private.key and public.crt exist under /home/minio/.minio/certs/ **
+
+# Directory structure:
+# └───.minio
+#    └───certs
+#        └───CAs
+
+MINIO_CERT_FILE=/home/minio/.minio/certs/public.crt
+MINIO_KEY_FILE=/home/minio/.minio/certs/private.key
+
+# -----------------------------------------------------------------------------
+# Storage Configuration
+# -----------------------------------------------------------------------------
+# MINIO_VOLUMES defines the storage path for MinIO data.
+# - Ensure the directory exists and has the correct ownership (`minio:minio`).
+# - Run: `sudo chown -R minio:minio /mnt/db/minio`
+# - Set correct permissions: `sudo chmod -R 750 /mnt/db/minio`
+# -----------------------------------------------------------------------------
+MINIO_VOLUMES="/mnt/db/minio"
+
+# -----------------------------------------------------------------------------
+# Server URLs
+# -----------------------------------------------------------------------------
+# MINIO_SERVER_URL: Internal-facing MinIO API endpoint.
+# - This should NOT be publicly exposed. It runs behind Nginx.
+# - Ensure this does NOT use port 443, as Nginx handles public traffic.
+# -----------------------------------------------------------------------------
+MINIO_SERVER_URL="https://minio.example.internal:9000"
+MINIO_HTTPS_PORT="443"
+MINIO_HTTP_PORT="80"
+MINIO_BROWSER=on
+
+# -----------------------------------------------------------------------------
+# Console Configuration
+# -----------------------------------------------------------------------------
+# --console-address :9001 ensures MinIO Console runs on a separate internal port.
+# - The console is accessible via Nginx reverse proxy at `/minio/`
+# -----------------------------------------------------------------------------
+#MINIO_OPTS="--console-address :9001"
+MINIO_CONSOLE_ADDRESS=":9001"
+
+# -----------------------------------------------------------------------------
+# Additional Notes:
+# -----------------------------------------------------------------------------
+# - Restart MinIO after making changes: `sudo systemctl restart minio`
+# - Check service status: `sudo systemctl status minio`
+# - View logs: `sudo journalctl -u minio --no-pager`
+# - Ensure systemd is correctly loading the environment: `sudo systemctl show minio | grep MINIO_`
+# - If issues persist, verify file permissions and MinIO user ownership.

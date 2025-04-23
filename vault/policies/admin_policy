@@ -1,0 +1,29 @@
+path "local/*" {
+  capabilities = ["create", "read", "update", "delete", "list"]
+}
+
+path "api/*" {
+  capabilities = ["create", "read", "update", "delete", "list"]
+}
+
+path "kv/*" {
+  capabilities = ["create", "read", "update", "delete", "list"]
+}
+
+path "cubbyhole/*" {
+  capabilities = ["create", "read", "update", "delete", "list"]
+}
+
+
+path "secrets/*" {
+  capabilities = ["create", "read", "update", "delete", "list"]
+}
+
+
+path "secrets/data/*" {
+  capabilities = ["create", "read", "update", "delete", "list"]
+}
+
+path "sys/mounts/*" {
+  capabilities = ["read","list"]
+}

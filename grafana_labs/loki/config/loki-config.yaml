@@ -1,0 +1,44 @@
+auth_enabled: false
+
+server:
+  http_listen_port: 3100
+
+  http_tls_config:
+    client_auth_type: RequireAndVerifyClientCert
+    client_ca_file: /etc/ca.crt  # Path to the CA certificate file
+    cert_file: /etc/public.crt  # Path to your client certificate file (if necessary)
+    key_file: /etc/private.key  # Path to your client key file (if necessary)
+
+
+common:
+  ring:
+    instance_addr: [REDACTED_IP]
+    kvstore:
+      store: inmemory
+  replication_factor: 1
+  path_prefix: /loki
+  storage:
+    s3:
+      bucketnames: loki  # Name of the bucket in MinIO
+      endpoint: minio.${DOMAIN}:9000  # MinIO service address (change to your actual MinIO endpoint)
+      access_key_id:
+      secret_access_key:
+      insecure: false  # Use HTTPS (disable insecure mode)
+      s3forcepathstyle: true  # MinIO uses path-style access for buckets
+
+
+schema_config:
+  configs:
+    - from: 2020-05-15
+      store: tsdb
+      object_store: s3
+      schema: v13
+      index:
+        prefix: index_
+        period: 24h
+
+storage_config:
+  tsdb_shipper:
+    active_index_directory: /loki/index
+    cache_location: /loki/index_cache
+

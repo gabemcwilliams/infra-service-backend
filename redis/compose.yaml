@@ -1,0 +1,18 @@
+services:
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - "6379:6379"  # Expose Redis default port
+    networks:
+      redis:
+        ipv4_address: [REDACTED_IP]
+    restart: unless-stopped
+
+networks:
+  redis:
+    name: redis
+    driver: bridge
+    ipam:
+      config:
+        - subnet: "[REDACTED_IP]/24"

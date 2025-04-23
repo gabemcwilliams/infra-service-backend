@@ -1,0 +1,152 @@
+#########################
+# General
+#########################
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+*.stackdump
+*.lock
+*.sarif
+
+
+#########################
+# Python
+#########################
+__pycache__/
+*.py[cod]
+*.pyo
+*.so
+.env
+.env.*
+*.egg-info/
+.eggs/
+venv/
+.venv/
+
+#########################
+# Jupyter / Data Science
+#########################
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+*checkpoint*
+*.csv
+*.tsv
+*.xlsx
+*.json
+*.xml
+
+#########################
+# Docker / Compose / Registry
+#########################
+**/.terraform/*
+*.tfstate*
+*.tfvars*
+.docker/
+.dockerignore
+**.yml
+
+#########################
+# VSCode / IntelliJ
+#########################
+.vscode/
+.idea/
+*.iml
+*.code-workspace
+.history/
+
+#########################
+# Node / JS
+#########################
+node_modules/
+dist/
+*.tgz
+
+#########################
+# OS & Editor Junk
+#########################
+*.DS_Store
+.AppleDouble
+.LSOverride
+.Trashes
+.fseventsd
+*.sublime-*
+*.tmp
+
+#########################
+# Compiled Binaries
+#########################
+*.exe
+*.dll
+*.so
+*.dylib
+*.a
+*.o
+*.obj
+*.out
+*.app
+
+#########################
+# Backup & Lock
+#########################
+*.orig
+*.rej
+*.bak
+*.swp
+*.swo
+*.tmp
+*~
+
+#########################
+# Build Artifacts
+#########################
+/build/
+/target/
+/bin/
+/out/
+
+#########################
+# Logs and Coverage
+#########################
+*.log
+coverage/
+htmlcov/
+.tox/
+.cache/
+coverage.xml
+nosetests.xml
+
+#########################
+# Misc
+#########################
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+#########################
+# Local / System
+#########################
+$RECYCLE.BIN/
+.directory
+.Trash-*/
+.fuse_hidden*
+.nfs*
+
+#########################
+# Secrets (Be careful!)
+#########################
+*.pem
+*.crt
+*.key
+*.hcl
+*.tfvars
+*.env
+.env.*
+*credentials*
+*secrets*
+
+# End of File

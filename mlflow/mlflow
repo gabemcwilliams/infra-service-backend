@@ -1,0 +1,43 @@
+
+# -----------------------------------------------------------------------------
+# MLflow Environment Configuration - Tracking Backend
+# -----------------------------------------------------------------------------
+# This configuration connects MLFlow to a PostgreSQL database, allowing it
+# to use PostgreSQL as its backend storage. The settings below are for a
+# PostgreSQL database named 'mlflow' running on the App Server.
+# -----------------------------------------------------------------------------
+
+# Set the artifact store to use MinIO with SSL (HTTPS)
+MLFLOW_SERVER_DEFAULT_ARTIFACT_ROOT=s3://ml-artifacts/
+_MLFLOW_SERVER_SERVE_ARTIFACTS: "true"
+
+# MinIO credentials
+AWS_CA_BUNDLE=/mlflow/ca.crt
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+MLFLOW_S3_ENDPOINT_URL=https://minio.example.internal:9000
+
+
+# MinIO endpoint for SSL (HTTPS)
+S3_ENDPOINT_URL=https://minio.example.internal:9000
+AWS_REGION=us-west-2
+
+# Set the backend store URI for PostgreSQL (tracking and backend store)
+MLFLOW_SERVER_BACKEND_STORE_URI=postgresql://mlflow:@db.example.internal:5432/mlflow?sslmode=require&sslrootcert=/mlflow/ca.crt&sslcert=/mlflow/public.crt&sslkey=/mlflow/private.key
+
+# -----------------------------------------------------------------------------
+# MLFlow Environment Configuration - Tracking URI
+# -----------------------------------------------------------------------------
+# This configuration sets the URI for MLFlow clients to interact with the
+# MLFlow Tracking Server. The settings below specify the endpoint for the
+# Tracking Server, running behind Nginx with SSL.
+# -----------------------------------------------------------------------------
+
+# Set the tracking URI for MLFlow client interactions (you may also use this for jobs)
+# MLFLOW_TRACKING_URI=https://mlflow.example.internal
+MLFLOW_TRACKING_INSECURE_TLS="false"
+MLFLOW_TRACKING_SERVER_CERT_PATH=/mlflow/ca.crt
+
+STORAGE_DIR=/mnt/data/swarm/storage/mlflow
+CERTS_DIR=/mnt/data/swarm/certs/mlflow
+CONFIGS_DIR=/mnt/data/swarm/configs/mlflow

@@ -1,0 +1,34 @@
+services:
+  vault:
+    image: registry.example.internal:5000/vault_ubuntu_22.04:latest
+
+    container_name: cert_keyring
+    hostname: vault_srv_01
+    restart: unless-stopped
+    networks:
+      security:
+        ipv4_address: [REDACTED_IP]
+    ports:
+      - "8200:8200"  # Vault API & UI on same port
+      - "9200:9000" # MinIO backend
+    env_file:
+      - vault.env  # Load sensitive Vault secrets from file
+      - .env # Load compose folder locations for relative assignment
+    volumes:
+      - "${CERTS_DIR}/public.crt:/etc/vault.d/public.crt:ro"
+      - "${CERTS_DIR}/private.key:/etc/vault.d/private.key:ro"
+      - "${CERTS_DIR}/ca.crt:/usr/local/share/ca-certificates/ca.crt:ro"
+      - "${CONFIGS_DIR}/vault.hcl:/etc/vault.d/vault.hcl"
+    extra_hosts:
+      - "minio.example.internal:[REDACTED_IP]" # MinIO backend
+    command: [ "/bin/sh", "-c", "update-ca-certificates && vault server -config=/etc/vault.d/vault.hcl" ]
+#    command: [ "/bin/sh", "-c","tail -f /dev/null" ]
+
+
+networks:
+  security:
+    name: security
+    driver: bridge
+    ipam:
+      config:
+        - subnet: [REDACTED_IP]/24

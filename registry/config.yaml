@@ -1,0 +1,28 @@
+#.yaml exists in ".yml"
+
+version: 0.1
+
+log:
+  level: debug  # Optional, set log level
+  formatter: text
+  fields:
+    service: registry
+    environment: staging
+
+http:
+  addr: :5000
+  secret: examplesecret
+  headers:
+    X-Content-Type-Options:
+      - nosniff
+
+  # Enable SSL for the registry
+  tls:
+    certificate: /certs/public.crt
+    key: /certs/private.key
+
+storage:
+  filesystem:
+    rootdirectory: /var/lib/registry  # Ensure the registry is storing data in the right location
+  delete:
+    enabled: true
